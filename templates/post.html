@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} — Neo News Hub{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="{{ post.excerpt or post.content[:160] }}">
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:image" content="{{ post.thumbnail or '' }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <article class="post-article">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/posts">Posts</a>
+      <span>›</span>
+      <span>{{ post.title[:40] }}{% if post.title|length > 40 %}…{% endif %}</span>
+    </nav>
+
+    <!-- Tags -->
+    {% if post.tags %}
+    <div class="post-tags">
+      {% for t in post.tags %}
+        <a href="/posts?tag={{ t }}" class="tag-pill">{{ t }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Title -->
+    <h1 class="article-title">{{ post.title }}</h1>
+
+    <!-- Meta -->
+    <div class="article-meta">
+      <span class="post-author">Neo</span>
+      <span class="post-sep">·</span>
+      <span class="post-date">{{ post.date[:10] if post.date else '' }}</span>
+    </div>
+
+    <!-- Thumbnail -->
+    {% if post.thumbnail %}
+    <div class="article-thumbnail-wrap">
+      <img src="{{ post.thumbnail }}" alt="{{ post.thumbnail_alt or post.title }}" class="article-thumbnail" loading="eager">
+    </div>
+    {% endif %}
+
+    <!-- Content -->
+    <div class="article-content">
+      {{ post.rendered_content }}
+    </div>
+
+    <!-- Divider -->
+    <div class="article-end-divider"></div>
+  </article>
+
+  <!-- Recent Posts -->
+  {% if recent %}
+  <section class="recent-section">
+    <div class="section-divider"><span>More Stories</span></div>
+    <div class="posts-grid posts-grid--compact">
+      {% for rp in recent %}
+      <article class="post-card">
+        <a href="/post/{{ rp.slug }}" class="card-link">
+          <div class="card-image-wrap">
+            {% if rp.thumbnail %}
+              <img src="{{ rp.thumbnail }}" alt="{{ rp.thumbnail_alt or rp.title }}" class="card-image" loading="lazy">
+            {% else %}
+              <div class="card-image placeholder-img"></div>
+            {% endif %}
+            {% if rp.tags %}
+              <span class="card-tag">{{ rp.tags[0] }}</span>
+            {% endif %}
+          </div>
+          <div class="card-body">
+            <h2 class="card-title">{{ rp.title }}</h2>
+            <p class="card-excerpt">{{ (rp.excerpt or rp.content[:120]) }}</p>
+            <div class="post-meta">
+              <span class="post-author">Neo</span>
+              <span class="post-sep">·</span>
+              <span class="post-date">{{ rp.date[:10] if rp.date else '' }}</span>
+            </div>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Neo News Hub{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <span class="top-bar-date" id="live-date"></span>
+    <span class="top-bar-tagline">AI · Tech · Innovation</span>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <a href="/" class="site-title">Neo News Hub</a>
+      <nav class="site-nav">
+        <a href="/" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Home</a>
+        <a href="/posts" class="nav-link {% if request.endpoint == 'all_posts' %}active{% endif %}">All Posts</a>
+        <a href="/about" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">About</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <!-- Mobile Nav -->
+    <div class="mobile-nav" id="mobileNav">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/posts" class="nav-link">All Posts</a>
+      <a href="/about" class="nav-link">About</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-title">Neo News Hub</span>
+        <span class="footer-copy">© 2025 Neo. All rights reserved.</span>
+        <nav class="footer-nav">
+          <a href="/">Home</a>
+          <a href="/posts">Posts</a>
+          <a href="/about">About</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

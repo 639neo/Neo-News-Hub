@@ -1,0 +1,4 @@
+venv/
+__pycache__/
+posted_titles.json
+posts/*.json

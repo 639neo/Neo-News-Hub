@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Neo News Hub — AI & Tech Intelligence{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {% if posts %}
+
+  <!-- Hero: Latest Post -->
+  {% set hero = posts[0] %}
+  <section class="hero-post">
+    <a href="/post/{{ hero.slug }}" class="hero-link">
+      <div class="hero-image-wrap">
+        {% if hero.thumbnail %}
+          <img src="{{ hero.thumbnail }}" alt="{{ hero.thumbnail_alt or hero.title }}" class="hero-image" loading="eager">
+        {% else %}
+          <div class="hero-image placeholder-img"></div>
+        {% endif %}
+        {% if hero.tags %}
+          <span class="hero-tag">{{ hero.tags[0] }}</span>
+        {% endif %}
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">{{ hero.title }}</h1>
+        <p class="hero-excerpt">{{ hero.excerpt or hero.content[:220] }}</p>
+        <div class="post-meta">
+          <span class="post-author">Neo</span>
+          <span class="post-sep">·</span>
+          <span class="post-date">{{ hero.date[:10] if hero.date else '' }}</span>
+        </div>
+      </div>
+    </a>
+  </section>
+
+  {% if posts|length > 1 %}
+  <!-- Divider -->
+  <div class="section-divider">
+    <span>Latest Stories</span>
+  </div>
+
+  <!-- Grid: Remaining Posts -->
+  <section class="posts-grid">
+    {% for post in posts[1:] %}
+    <article class="post-card">
+      <a href="/post/{{ post.slug }}" class="card-link">
+        <div class="card-image-wrap">
+          {% if post.thumbnail %}
+            <img src="{{ post.thumbnail }}" alt="{{ post.thumbnail_alt or post.title }}" class="card-image" loading="lazy">
+          {% else %}
+            <div class="card-image placeholder-img"></div>
+          {% endif %}
+          {% if post.tags %}
+            <span class="card-tag">{{ post.tags[0] }}</span>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">{{ post.title }}</h2>
+          <p class="card-excerpt">{{ (post.excerpt or post.content[:140]) }}</p>
+          <div class="post-meta">
+            <span class="post-author">Neo</span>
+            <span class="post-sep">·</span>
+            <span class="post-date">{{ post.date[:10] if post.date else '' }}</span>
+          </div>
+        </div>
+      </a>
+    </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% else %}
+  <div class="empty-state">
+    <h2>No posts yet.</h2>
+    <p>Check back soon — stories are on the way.</p>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

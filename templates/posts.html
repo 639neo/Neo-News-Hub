@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}All Posts — Neo News Hub{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-heading">All Posts</h1>
+    <p class="page-subheading">Every story, every angle.</p>
+  </div>
+
+  <!-- Search & Filters -->
+  <div class="search-bar-wrap">
+    <form method="get" action="/posts" class="search-form" id="searchForm">
+      <div class="search-input-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" name="q" value="{{ query }}" placeholder="Search stories…" class="search-input" autocomplete="off">
+        {% if query or tag %}
+          <a href="/posts" class="search-clear" title="Clear">✕</a>
+        {% endif %}
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Filter:</span>
+        <a href="/posts{% if query %}?q={{ query }}{% endif %}" class="filter-chip {% if not tag %}active{% endif %}">All</a>
+        {% for t in all_tags %}
+          <a href="/posts?{% if query %}q={{ query }}&{% endif %}tag={{ t }}" class="filter-chip {% if tag == t %}active{% endif %}">{{ t }}</a>
+        {% endfor %}
+      </div>
+    </form>
+  </div>
+
+  <!-- Results Info -->
+  {% if query or tag %}
+  <div class="results-info">
+    {% if posts %}
+      <span>{{ posts|length }} result{{ 's' if posts|length != 1 }} found{% if query %} for "<strong>{{ query }}</strong>"{% endif %}{% if tag %} in <strong>{{ tag }}</strong>{% endif %}</span>
+    {% else %}
+      <span>No results{% if query %} for "<strong>{{ query }}</strong>"{% endif %}{% if tag %} in <strong>{{ tag }}</strong>{% endif %}</span>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Posts List -->
+  {% if posts %}
+  <section class="posts-list">
+    {% for post in posts %}
+    <article class="list-card">
+      <a href="/post/{{ post.slug }}" class="list-card-link">
+        <div class="list-card-image-wrap">
+          {% if post.thumbnail %}
+            <img src="{{ post.thumbnail }}" alt="{{ post.thumbnail_alt or post.title }}" class="list-card-image" loading="lazy">
+          {% else %}
+            <div class="list-card-image placeholder-img"></div>
+          {% endif %}
+        </div>
+        <div class="list-card-body">
+          {% if post.tags %}
+          <div class="list-card-tags">
+            {% for t in post.tags[:3] %}
+              <span class="tag-pill">{{ t }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <h2 class="list-card-title">{{ post.title }}</h2>
+          <p class="list-card-excerpt">{{ (post.excerpt or post.content[:200]) }}</p>
+          <div class="post-meta">
+            <span class="post-author">Neo</span>
+            <span class="post-sep">·</span>
+            <span class="post-date">{{ post.date[:10] if post.date else '' }}</span>
+          </div>
+        </div>
+      </a>
+    </article>
+    {% endfor %}
+  </section>
+  {% else %}
+  <div class="empty-state">
+    <h2>Nothing found.</h2>
+    <p>Try a different keyword or clear the filter.</p>
+    <a href="/posts" class="btn-primary">Clear Search</a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Live search: debounce submit
+  const input = document.querySelector('.search-input');
+  let timer;
+  if (input) {
+    input.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => document.getElementById('searchForm').submit(), 400);
+    });
+  }
+</script>
+{% endblock %}
